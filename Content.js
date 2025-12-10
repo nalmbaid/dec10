@@ -204,33 +204,36 @@ function showWeather(mode, clickY = null, clickX = null) {
    WATERDROP and LIGHTNING banners — centered under cloud guy 
 ---------------------------------------------- */
 
-if (mode === "waterdrop") {
-  const cloudWidth = activeImage ? activeImage.offsetWidth : 120;
+  if (mode === "waterdrop") {
 
-  // Cloud's left edge ###changed here
-  const cloudLeft = window.innerWidth - 20 - cloudWidth;
+    const cloudWidth = activeImage ? activeImage.offsetWidth : 120;
 
-  // Offset downward from cloud top ###changed here
-  const verticalOffset = 40;  // adjust this value to change how low it starts
+    // Cloud's left edge
+    const cloudLeft = window.innerWidth - 20 - cloudWidth;
 
-  Object.assign(div.style, {
-    top: verticalOffset + "px", 
-    left: cloudLeft + "px",     
-    width: cloudWidth + "px",
-    height: "100vh",
-    backgroundImage: `url(${chrome.runtime.getURL("waterdrops.png")})`,
-    backgroundRepeat: "repeat",
-    backgroundSize: cloudWidth + "px auto",
-    animation: "rainScroll 5s linear infinite"
-  });
-}
+    // ###55555 adjustment — start rain MIDWAY down cloud guy instead of top of screen
+    const cloudTop = activeImage ? activeImage.getBoundingClientRect().top : 20;
+    const midOffset = 50; // adjust as needed
+    const startY = cloudTop + midOffset;
+
+    Object.assign(div.style, {
+      top: startY + "px",        /* ###55555 adjustment */
+      left: cloudLeft + "px",
+      width: cloudWidth + "px",
+      height: "100vh",
+      backgroundImage: `url(${chrome.runtime.getURL("waterdrops.png")})`,
+      backgroundRepeat: "repeat",
+      backgroundSize: cloudWidth + "px auto",
+      animation: "rainScroll 5s linear infinite"
+    });
+  }
 
 
   /* ----------------------------------------------
-     LIGHTNING — randomized flash ###changed here
+     LIGHTNING — randomized flash
   ---------------------------------------------- */
   if (mode === "lightning") {
-    /* Randomize flash brightness ###changed here */
+
     div.style.setProperty("--flash1", Math.random());
     div.style.setProperty("--flash2", Math.random());
     div.style.setProperty("--flash3", Math.random());
@@ -262,12 +265,11 @@ if (mode === "waterdrop") {
 
 
 /* ---------------------------------------------------
-   Load starting cloud (always e0) ###changed here
+   Load starting cloud (always e0)
 --------------------------------------------------- */
 if (isShoppingSite()) {
   const saved = Number(localStorage.getItem("currentImageIndex"));
 
-  // if saved not valid, start at 0, else use saved ###changed here
   currentImageIndex = isNaN(saved) ? 0 : saved;
 
   showEMS(baseImages[currentImageIndex]);
@@ -297,7 +299,7 @@ document.addEventListener("click", (e) => {
   if (isAdd) {
     currentImageIndex = Math.min(currentImageIndex + 1, baseImages.length - 1);
     showEMS(baseImages[currentImageIndex]);
-    showBubble(currentImageIndex);  /* ###changed here: bubble matches Option A */
+    showBubble(currentImageIndex);
 
     const mode = weatherMode[currentImageIndex];
 
