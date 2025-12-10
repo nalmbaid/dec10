@@ -1,5 +1,6 @@
 /* ---------------------------------------------------
-   Detect shopping sites
+   This function determines if the website you are on is a shopping website or has the potential to be.
+   It looks  for kep shopping terms on the website you are on and its aria labels.
 --------------------------------------------------- */
 function isShoppingSite() {
   const bodyText = document.body.innerText.toLowerCase();
@@ -30,10 +31,10 @@ function isShoppingSite() {
 
 
 /* ---------------------------------------------------
-   Cloud images + speech bubbles
+   Load in the phases of Cloud Guy and the speech bubbles
 --------------------------------------------------- */
 const baseImages = [
-  "e0.png",  /* ###changed here — added explicit e0 start */
+  "e0.png",  /* This first image is the clear cloud guy, does not have a corresponding speech bubble, and is always on a shopping webiste like a ghost */
   "e1.png", "e2.png", "e3.png", "e4.png", "e5.png",
   "e6.png", "e7.png", "e8.png", "e9.png", "e10.png",
   "e11.png", "e12.png", "e13.png", "e14.png", "e15.png",
@@ -56,7 +57,8 @@ let activeBubble = null;
 
 
 /* ---------------------------------------------------
-   Weather modes
+   Weather modes -- this decides which of the weather banners show up as you shop.
+   The rain gets muggier over time and then eventually you switch to lightning banner + click 
 --------------------------------------------------- */
 const weatherMode = {
   0: "blank",
@@ -85,7 +87,7 @@ const weatherMode = {
 
 
 /* ---------------------------------------------------
-   Show cloud guy
+   set cloud guy location top right
 --------------------------------------------------- */
 function showEMS(filename) {
   if (!activeImage) {
@@ -110,7 +112,7 @@ function showEMS(filename) {
 
 
 /* ---------------------------------------------------
-   Speech bubbles
+   Speech bubbles set up start with index after e0
 --------------------------------------------------- */
 function showBubble(index) {
 
@@ -161,7 +163,7 @@ let activeWeather = null;
 const style = document.createElement("style");
 style.textContent = `
 
-/* Waterdrop now scrolls downward */
+/* Waterdrop scrolls downward */
 @keyframes rainScroll {
   from { background-position-y: 0; }
   to   { background-position-y: 100%; }
@@ -199,7 +201,7 @@ function showWeather(mode, clickY = null, clickX = null) {
 
 
   /* ----------------------------------------------
-   WATERDROP — centered under cloud guy ###changed here
+   WATERDROP and LIGHTNING banners — centered under cloud guy 
 ---------------------------------------------- */
 
 if (mode === "waterdrop") {
@@ -212,8 +214,8 @@ if (mode === "waterdrop") {
   const verticalOffset = 40;  // adjust this value to change how low it starts
 
   Object.assign(div.style, {
-    top: verticalOffset + "px",  /* starts slightly lower than cloud */
-    left: cloudLeft + "px",      /* aligned with cloud’s left edge */
+    top: verticalOffset + "px", 
+    left: cloudLeft + "px",     
     width: cloudWidth + "px",
     height: "100vh",
     backgroundImage: `url(${chrome.runtime.getURL("waterdrops.png")})`,
@@ -285,7 +287,7 @@ document.addEventListener("click", (e) => {
   const cls  = (button.className || "").toLowerCase();
 
   const addWords = ["add to cart", "add to bag", "buy now", "purchase", "shop now", "order now", "add", "+"];
-  const delWords = ["remove", "minus"];
+  const delWords = ["remove", "minus","decrease","less","delete","trash"];
 
   const isAdd = addWords.some(w => text.includes(w) || aria.includes(w) || cls.includes(w));
   const isDel = delWords.some(w => text.includes(w) || aria.includes(w) || cls.includes(w));
